@@ -73,7 +73,7 @@
      */
     #define RAK3172_DEFAULT_CONFIG(UART_Interface, Rx_Pin, Tx_Pin, Baud)    {                                                                       \
                                                                                 .UART = {                                                           \
-                                                                                    .Interface = UART_Interface,                                    \
+                                                                                    .Interface = (uart_port_t)UART_Interface,                                    \
                                                                                     .Rx = static_cast<gpio_num_t>(Rx_Pin),                          \
                                                                                     .Tx = static_cast<gpio_num_t>(Tx_Pin),                          \
                                                                                     .Baudrate = static_cast<RAK3172_Baud_t>(Baud),                  \
