@@ -613,6 +613,8 @@ RAK3172_Error_t RAK3172_Init(RAK3172_t& p_Device)
         RAK3172_ERROR_CHECK(RAK3172_FactoryReset(p_Device));
     #endif
 
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
     // Check if echo mode is enabled.
     RAK3172_ERROR_CHECK(RAK3172_SendCommand(p_Device, "AT", NULL, &Response));
     RAK3172_LOGD(TAG, "Response from 'AT': %s", Response.c_str());

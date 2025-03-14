@@ -108,10 +108,18 @@ RAK3172_Error_t RAK3172_P2P_Init(RAK3172_t& p_Device, uint32_t Frequency, RAK317
     RAK3172_LOGD(TAG, "     Use configuration: %s", Value.c_str());
 
     #ifdef CONFIG_RAK3172_USE_RUI3
-        RAK3172_ERROR_CHECK(RAK3172_P2P_isEncryptionEnabled(p_Device, &p_Device.P2P.isEncryptionEnabled));
+//FIXME        RAK3172_ERROR_CHECK(RAK3172_P2P_isEncryptionEnabled(p_Device, &p_Device.P2P.isEncryptionEnabled));
     #endif
 
-    return RAK3172_SendCommand(p_Device, "AT+P2P=" + Value);
+    //return RAK3172_SendCommand(p_Device, "AT+P2P=" + Value);
+    auto r = RAK3172_SendCommand(p_Device, "AT+P2P=" + Value);
+    RAK3172_LOGD(TAG, "r = 0x%X", static_cast<int>(r));
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    
+
+    auto r2 = RAK3172_SendCommand(p_Device, "AT+P2P=" + Value);
+    RAK3172_LOGD(TAG, "r2 = 0x%X", static_cast<int>(r2));
+    return r2;
 }
 
 RAK3172_Error_t RAK3172_P2P_GetConfig(const RAK3172_t& p_Device, std::string* const p_Config)
@@ -359,6 +367,8 @@ RAK3172_Error_t RAK3172_P2P_GetPower(const RAK3172_t& p_Device, uint8_t* const p
 RAK3172_Error_t RAK3172_P2P_Transmit(const RAK3172_t& p_Device, const uint8_t* const p_Buffer, uint8_t Length)
 {
     std::string Payload;
+
+RAK3172_LOGD(TAG, "p_Device.Mode = %d", p_Device.Mode);
 
     if((p_Buffer == NULL) && (Length > 0))
     {
