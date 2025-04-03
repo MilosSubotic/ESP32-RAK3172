@@ -102,6 +102,8 @@ RAK3172_Error_t RAK3172_P2P_Init(RAK3172_t& p_Device, uint32_t Frequency, RAK317
 
     RAK3172_LOGI(TAG, "Initialize module in P2P mode...");
     RAK3172_ERROR_CHECK(RAK3172_SetMode(p_Device, RAK_MODE_P2P));
+    // asdf
+RAK3172_LOGD(TAG, "p_Device.Mode = %d", p_Device.Mode);
 
     p_Device.Internal.isBusy = false;
 
@@ -119,6 +121,7 @@ RAK3172_Error_t RAK3172_P2P_Init(RAK3172_t& p_Device, uint32_t Frequency, RAK317
 
     auto r2 = RAK3172_SendCommand(p_Device, "AT+P2P=" + Value);
     RAK3172_LOGD(TAG, "r2 = 0x%X", static_cast<int>(r2));
+
     return r2;
 }
 
@@ -368,6 +371,7 @@ RAK3172_Error_t RAK3172_P2P_Transmit(const RAK3172_t& p_Device, const uint8_t* c
 {
     std::string Payload;
 
+//asdf
 RAK3172_LOGD(TAG, "p_Device.Mode = %d", p_Device.Mode);
 
     if((p_Buffer == NULL) && (Length > 0))
