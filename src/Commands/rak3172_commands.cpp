@@ -143,7 +143,6 @@ RAK3172_Error_t RAK3172_SetMode(RAK3172_t& p_Device, RAK3172_Mode_t Mode)
 
     // Transmit the command.
     Command = "AT+NWM=" + std::to_string(static_cast<uint32_t>(Mode)) + "\r\n";
-RAK3172_LOGD(TAG, "RAK3172_SetMode: Command = %s", Command.c_str());
     uart_write_bytes(p_Device.UART.Interface, static_cast<const char*>(Command.c_str()), Command.length());
 
     #ifndef CONFIG_RAK3172_USE_RUI3
@@ -151,23 +150,18 @@ RAK3172_LOGD(TAG, "RAK3172_SetMode: Command = %s", Command.c_str());
         if(xQueueReceive(p_Device.Internal.MessageQueue, &Response, RAK3172_DEFAULT_WAIT_TIMEOUT / portTICK_PERIOD_MS) != pdPASS)
         {
             Error = RAK3172_ERR_TIMEOUT;
-RAK3172_LOGW(TAG, "RAK3172_SetMode: RAK3172_SetMode_Exit 1");
             goto RAK3172_SetMode_Exit;
         }
         delete Response;
     #endif
-RAK3172_LOGD(TAG, "RAK3172_SetMode: Response = %s", Response->c_str());
     
 
     // Receive the trailing status code.
     if(xQueueReceive(p_Device.Internal.MessageQueue, &Response, 3*RAK3172_DEFAULT_WAIT_TIMEOUT / portTICK_PERIOD_MS) != pdPASS)
     {
         Error = RAK3172_ERR_TIMEOUT;
-RAK3172_LOGW(TAG, "RAK3172_SetMode: RAK3172_SetMode_Exit 2");
         goto RAK3172_SetMode_Exit;
     }
-RAK3172_LOGD(TAG, "RAK3172_SetMode: Response = \"%s\"", Response->c_str());
-RAK3172_LOGD(TAG, "RAK3172_SetMode: find %d", Response->find("OK"));
 
     // 'OK' received, so the mode wasn´t change. Leave the function.
     if(Response->find("OK") != std::string::npos)
@@ -175,7 +169,7 @@ RAK3172_LOGD(TAG, "RAK3172_SetMode: find %d", Response->find("OK"));
         delete Response;
 
         Error = RAK3172_ERR_OK;
-RAK3172_LOGW(TAG, "RAK3172_SetMode: RAK3172_SetMode_Exit 3");
+//RAK3172_LOGW(TAG, "RAK3172_SetMode: RAK3172_SetMode_Exit 3");
         goto RAK3172_SetMode_Exit;
     }
 
@@ -197,9 +191,9 @@ RAK3172_LOGW(TAG, "RAK3172_SetMode: RAK3172_SetMode_Exit 3");
     p_Device.Mode = Mode;
 
 RAK3172_SetMode_Exit:
-RAK3172_LOGW(TAG, "RAK3172_SetMode: RAK3172_SetMode_Exit");
     p_Device.Internal.isBusy = false;
 
+//FIXME Hack. Code above is not quite good.
 vTaskDelay(1500 / portTICK_PERIOD_MS);
 RAK3172_LOGD(TAG, "RAK3172_SetMode: p_Device.Mode = %d", p_Device.Mode);
 RAK3172_GetMode(p_Device);
